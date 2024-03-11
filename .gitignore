@@ -10,7 +10,7 @@
 
 # production
 /build
- /homework
+/homework
 
 # misc
 .DS_Store
