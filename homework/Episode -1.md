@@ -35,6 +35,11 @@ firstly we install tailwind in the this afterthat according to the tailwind css 
      -signin form 
      -form validation 
      -useRef Hook
+    -firebase setup 
+    -create signup user account 
+    -implement signin in the user API
+    -created redux store with userslice 
+
 
 - NEXT COMMIT 
  - now we make 2 folder component and utils  
@@ -65,3 +70,55 @@ firstly we install tailwind in the this afterthat according to the tailwind css 
    -----------------FIREBASE     PROJECT ID - netflixgpt-c40db
    firbase.google.com > getstarted > addproject > project name > continue after its submission when it show project is ready then > web and put you project name and it will give us a command and the hame aak js file milegi jisko humne firebase.js m rakh liya 
    install firebase cli (npm install -g firebase-tools) iske baad firebase login karenge 
+   -------USER SIGN-IN AND SIGN - UP  JO BHI SIGN UP KARENGE WO HUME FIREBASE M DIKHEGA 
+   ab mujhe for the new and old user sign in /sign up karenge to hum firebase me jakar wha se 
+   (import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";) in the firebase.js we will use only getAuth and  
+  export const auth = getAuth(); in the firebase or jaise hi hum sign up karenge to yedi password name shi h to user console ho jayega console bar me  hum "signInWithEmailAndPassword" ko firebase se utha kar iska use sign in k liye karte h isme hum user ko console kara k dekh lete h if wo user exist karta h to uski information console bar m dikh jayegi otherwise hum error dikhegi or yehi hum  "createUserWithEmailAndPassword" ka use user create karne k liye karte h iske liye humne auth ko firebase m likha h takki hum har baar na likhe sirf isse import karva le or (signInWithEmailAndPassword,createUserWithEmailAndPassword) ko siddha firebase se hi import karvate h 
+
+
+  -- NOW WE WILL STORE USER INFORMATION IN THE REDUX STORE :
+  so first of all we will set up the redux store we need to install two libraries redux-toolkit and react-redux so we will give command to terminal for the first one is "npm i -D @reduxjs/toolkit" and for the second one "npm i react-redux"
+  now we will make a file for the store  in the utils "appStore.js"  and now we will create slice which name is now we will import userReducer in the userStore from the userSlice 
+  now i will provide store to the body in the App.js thorugh provider and now i wrap my body in the provider like this {<Provider store={appStore}><Body /></Provider>}   
+  now we will come on the login.js flie whenever i signIn and signUp then data will dispatch and this thing happen again and again ,prevent this repeatation of the dispatching of data we have a utility which is given to us by the firebase is "onAuthStateChanged" in the firebase docs there are a manage users and we can see the example of the 
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+const auth = getAuth();
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    const uid = user.uid;
+    // ...
+  } else {
+    // User is signed out
+    // ...
+  }
+});
+this API is call whenever user "signin,signup,signout,authenticationstatechange" this is kind an eventListener 
+i cannot call it again and again i only call it once so i use useEffect in the body.js and there i will extract the value of uid and email and displayname from the user,how to dispatch an action through the useDispatch ,always use your hook on the top of your component and i put ( dispatch(addUser({uid:uid,email:email,displayName:displayName}));) in my store ,and we will use
+ dispatch(removeUser()); for signout and when i signup or the signin the page should be redirected so we use usenavigate hook for it  ,if user sign in or sign out then page should redirect to the /browse in the login.js  now when we sign in or sign up whenever we click on the red button then we will reach on the browse 
+ now we will add header to the browse page 
+ now we will add sign out button to the header
+ and now we will move towards the docs for the signout functionality
+  jaise hi signout button par click karenge to yeh call laga dega handleSignOut function  ko wha par hum sign out ki property ko dal denge,
+  now we will work on the update user profile when he sign up on this app so firstly we will move towards the manage users docs and we use update user's profile
+  { updateProfile(auth.currentUser, {
+  displayName: "Jane Q. User", photoURL: "https://example.com/jane-q-user/profile.jpg"
+}).then(() => {
+  // Profile updated!
+  // ...
+}).catch((error) => {
+  // An error occurred
+  // ...
+});
+
+  
+  }
+  and we will use the useRef for the name and use it in the display name and the photoURL after the updation of the profile we will navigate it "/browse" or if we get and error then we will update the errorMessage through the error.message ,and now we will move towards the onAuthStateChanged and here we will get data like uid ,email,photoURL and displayName  from the user afterthat we dispatch it in the store 
+
+
+  how i use photoURL?
+  i will use my useSelector bacause we have data of image in the slice so we will use useSelector
+  
+  everything is done but the logo and the sign out button is shown on the login page so what we do to remove it

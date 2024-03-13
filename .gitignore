@@ -11,7 +11,8 @@
 # production
 /build
 /homework
-
+/homework
+/Episode -1.md
 # misc
 .DS_Store
 .env.local
