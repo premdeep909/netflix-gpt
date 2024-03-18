@@ -39,7 +39,27 @@ firstly we install tailwind in the this afterthat according to the tailwind css 
     -create signup user account 
     -implement signin in the user API
     -created redux store with userslice 
-
+    -implement sign out 
+    -update profile 
+    - Bug Fix :sign up userdisplayname and profile picture update 
+    -Bug Fix :if the user is not logged in redirect browse to login page vice versa 
+    -unsubscribe onauthstatechanged callback
+    <!-- -fetch from tmdb movie 
+     -1. adding constant files to the project 
+    -2. import api from the TMDB for background trailer 
+    - 3 adding movies data to the store --> 
+    -Add hardcoded values to the constants value 
+    - Register TMDB api & create an app & get access tokan 
+    - Get data from TMDB now playing movies list api 
+    - Create custom hook for now playing movie 
+    - create movieSlice
+    - Update store with movies data 
+    - Planing for mainContainer & secondaryContainer
+    - Fetch data for trailer video 
+    - Update store with trailer video data 
+    - Embedded the youtube video and make it autoplay and mute 
+    - Tailwind classes to make it look awesome  
+    
 
 - NEXT COMMIT 
  - now we make 2 folder component and utils  
@@ -121,4 +141,98 @@ i cannot call it again and again i only call it once so i use useEffect in the b
   how i use photoURL?
   i will use my useSelector bacause we have data of image in the slice so we will use useSelector
   
-  everything is done but the logo and the sign out button is shown on the login page so what we do to remove it
+  everything is done but the logo and the sign out button is shown on the login page so what we do to remove it?
+
+
+
+
+----------------------------------------------------- NEXT EPISODE ------------------------------------------------------------
+NOW WE WILL TMDB FOR THE API FOR THE MOVIE TRAILER ON THE BROWSE PAGE 
+I USE IT BEACAUSE IT HAS PROPER DOCUMENTATION OF LATEST MOVIES 
+there are a bug if i use localhost:3000/browse  then we reach at the browse page but actually we have to move browse page after sign in or sign up 
+now we will fix this bug 
+we will go to the body.js and usenavigate ka use karke jaise hi hume user mila hua to  sara data store kara denge or page ko navigate kar denge for yedi or jaise hi signout karte h to yeh signout karte h to user ka data remove ho jata h or isko redirect kar diya jata h login page m ,but it will give us error (useNavigate() may be used only in the context of a <Router> component.) so we will copy this useEffect variable and paste  in in the header and i will also remove navigate from the login page, whenever sign in sign out is called i always rely on this new change ,
+ 
+ ------UNSUBSCRIBING ONAUTHSTATCHANGED 
+useEffect will called once when my component loads but header will load multiple times ,onauthchanged is like a event listener ,whenever auth status changed when user login and logout this(onauthstatuschanged(OASC)) keeps track o it ,if my component unmounts then i unsubscribe this(OASC)
+WHERE WE DO CLEANING INSIDE OUR USEEFFECT ?
+i will have to return a function of this component ,when i call the unsubscribe then iT will remove OASC from our browser  
+when my header component unload(unmount) then unsubscribe this function unsubcibe this event .it is hygiene practice 
+
+
+------------------1. adding constant files to the project 
+when we see any string photo url type then i always use constant.js file 
+
+-----------------2. import api from the TMDB for background trailer
+we visit the tmdb and get popular movies api and we put API_OPTION and keep it in the constants.js and import api in the 
+in the browse.js 
+  const getNowPlayingMovies = async () => {
+        const data = await fetch(
+          "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
+          API_OPTIONS
+        );
+        const json = await data.json();
+        console.log(json);
+    
+    }   
+    and we keep getNowPlayingMovies this in the useEffect because we want to fetch only one time and after that check the console and i see in the console all the movies console 2 times due to the strict mode  if we go in the index.js we will see there ,and at the local host it console two times but at the build production it is not happen twice 
+    why it is happen twice ? 
+    react do extra rendering to check consistency between your calls 
+
+    ----------------------3.adding movies data to the store
+    we create movie slice ,and put the all data in the movie slice after making all the movieSlice i will store its data to the appStore.js ,i will store json.result which is data of the background trailer i will add it in the movieSlice so i will dispatch it so i will import addnowplayingmovies from the  movieSlice and pass the json.results in this addnowplayingmovies and dispatch it 
+        -- create own custom hook
+        code of browse is looking so ugly so make a seperate folder for it and its name is hooks and keep fetch movies API and 
+        the dispatch to store and the useEffect will keep in it and we create a hook in the browse page 
+
+        -- start building browse page
+       - MAIN CONTAINER 
+         -- VIDEO BACKGROUND
+         -- VIDEO TITLE 
+      - SECONDARY CONTAINER 
+       -- MOVIES LIST *N
+       -- CARDS*N
+make js file in the components main container 
+and SecondaryContainer also 
+now we will need data in the maincontainer so we will get data through the useSelctor 
+(const movies = useSelector(store => store.movies?.nowPlayingMovies);)
+now we need two things in the maincontainer 1.VideoBackground 2. VideoTitle 
+ and now we will overlap VideoTitle on the VideoBackground 
+ mere ko sbhi movies nhi chalni h aak hi screen par mere ko keval aak hi movie chalni h so m kya karta hu first movie hi le leta hu (const mainMovie = movies[0];console.log(mainMovie);)  so i get error in this 
+ (Cannot read properties of null (reading '0')) and
+  why this error come in this ?
+  when i see in the store nowplayingmovies is null and i am trying to access the 0th index of the null ,if movies is null then i will return from it ,and it is called early return 
+        it means if there is no movies then return and if there is movie then the first movie will be on the screen 
+        - now it is time to build the VideoTitle so i will extract few detail form this mainmovie 1. original_title
+2.overview 
+now i pass both of them in the maincontainer video title m props k roop m daal denge 
+
+      - Building Video Background 
+       - now i will go on the tmdb and in the movies section and go to the  video section and there i will copy id from the console and paste it in the pathparam there and get api response  
+     m kya karta hu sabse phle api se id le leta hu or usko m paste karta hu  movie k video section me or wha or jo api muje api milti h m uska use videobackground me karta hu 
+    or yeh check karta hu konsi type trailer h so iske liye hum 
+    ( const filterData = json.results.filter((video) => video.type === "Trailer");
+      const trailer = filterData[0];// iska use isliye kiya h kai  baar aak se jyada trailer hota  h
+        console.log(trailer);)
+        or yedi filterdata ki length 0 nhi h to filterDatap[0] ka use karte h nhi to json.results[0] use karte h  
+        or jo bhi console hota h usme elemental key hoti h youtube ki jisko paste karke hum isko youtube par dekh sakte h 
+        how to get embed code of the youtube video when we share we get it put as JSX 
+        # we get error after that(console.js:213 Warning: Invalid DOM property `frameborder`. Did you mean `frameBorder`?) because it allows the camel case in the JSX;
+        now i remove key from the embeded code and put there trailer.key and put it in the {} but here now one problem trailer is not defined ,we have to solve two method to solve it one is the state variable (
+          const[trailerId,setTrailerId] = useState(null);)
+          but if i use redux store then i will not need to use the state variable so i put my trailer in my store 
+          - how i put my trailer in the store ?
+            we will add trailer in the movieSlice so i go to movie slice and there i declare trailerVideo : null and after that make a reducer there 
+            (addTrailerVideo : (state,action) =>{
+            state.trailerVideo = action.payload;
+        })
+after that i export addTrailerVideo afterthat i use useDispatch and dispatch the trailer in the in the movieSlice afterthat i use useSelector to read
+
+
+# create custom hook for the trailer video 
+we create a js file in the hooks is useMovieTrailer i will use there api call and the useEffect also and now i pass movie id in the VideoBackground.js in the useMovieTrailer(movieId);and this will go in the useMovieTrailer as a props and we use it in the API 
+{ const data = await fetch("https://api.themoviedb.org/3/movie/"+movieId+"/videos?language=en-US",API_OPTIONS);}
+# building video background 
+the all things of tailwind 
+we will give background to the videoTitle to the title so we will give background gredient to right
+we will use this property( "?&autoplay=1&mute=1") to mute the video and the autoplay
