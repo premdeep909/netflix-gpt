@@ -258,3 +258,5 @@ what we need to do firstly we will do planning here
 
   # how to add popular movie api in this project 
   firstly we will make a file usePopularMovie.js and make there a functional component usePopularMovies.js and import api from the TMDB and use the useEffect and dispatch the action in the store after that we will make reducer in the movieSlice.js now i go to the Browse.js and i use the usePopularMovies() there.and update the SecondaryContainer.js 
+
+  # now we eill talk about the GPT
