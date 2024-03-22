@@ -236,3 +236,25 @@ we create a js file in the hooks is useMovieTrailer i will use there api call an
 the all things of tailwind 
 we will give background to the videoTitle to the title so we will give background gredient to right
 we will use this property( "?&autoplay=1&mute=1") to mute the video and the autoplay
+
+
+
+
+## CREATING MOVIES SUGGESTIONS LIST 
+what we need to do firstly we will do planning here 
+  MovieList - now playing
+    MovieCard*n
+  MovieList - popular
+  MovieList - tranding
+  MovieList - horror 
+   now make a seperate js file {MovieList.js} and {MovieCard.js} also and in the Secondary container we will pass title in the MovieList and 
+   - data of movies 
+   how we get data of movies?
+   we get this data from store through the useSelector
+   now i use the props(title,movies) in the moviesList and when we do console.log(movies) of  then we will get list of the movies in the console 
+   now we will use poster_path and we will get cdn url for the image 
+   (https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg) so we have the poster path for the every movie we will use the (https://image.tmdb.org/t/p/w500/+"poster_path") i put this url in the constents.js and this url is use in the MovieCard.js in the image along with the posterpath (where we will get posterpath so we pass props in the MovieCard which is get by us from the MovieList(<MovieCard posterpath={movies[0].poster_path} />)) we have multiple movies in this so i will use map for it ,movies k upar map laga diya or har movie  ko aisa card (<MovieCard posterpath={movies[0].poster_path} />) chiye we will use the key also (  {movies.map((movie) =>(<MovieCard posterpath={movie.poster_path} />))})
+
+
+  # how to add popular movie api in this project 
+  firstly we will make a file usePopularMovie.js and make there a functional component usePopularMovies.js and import api from the TMDB and use the useEffect and dispatch the action in the store after that we will make reducer in the movieSlice.js now i go to the Browse.js and i use the usePopularMovies() there.and update the SecondaryContainer.js 
