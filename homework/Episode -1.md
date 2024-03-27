@@ -59,6 +59,17 @@ firstly we install tailwind in the this afterthat according to the tailwind css 
     - Update store with trailer video data 
     - Embedded the youtube video and make it autoplay and mute 
     - Tailwind classes to make it look awesome  
+    - build secondary component 
+    - build movie list 
+    - build movie card
+    - TMDB image CDN Url 
+    - made the browse page amazing with tailwind css 
+    - usePopularMovie custom hook
+    - add GPT search page
+    - Gpt search bar 
+    - multi-language feature in our app
+    - 
+
     
 
 - NEXT COMMIT 
@@ -260,3 +271,46 @@ what we need to do firstly we will do planning here
   firstly we will make a file usePopularMovie.js and make there a functional component usePopularMovies.js and import api from the TMDB and use the useEffect and dispatch the action in the store after that we will make reducer in the movieSlice.js now i go to the Browse.js and i use the usePopularMovies() there.and update the SecondaryContainer.js 
 
   # now we eill talk about the GPT
+  we will add the button in the Header.js 
+  i will make the GPTSearch.js functional component 
+  and i add its in the Browse.js as well as the header and the MainContainer and the SecondaryContainer 
+  we need to toggle functionality in the Header.js and make function (handleGptSearchClick) function 
+  lets create the seperate Slice for store this data in the redux store  GPTSlice in the utils 
+  and now we will add this slice in the redux store(gpt: gptReducer,) check it in the store (showGptSearch(pin):false) so it is store in the appStore successfully 
+  now we toggle this action ,how we will toggle it? 
+  we will dispatch an action(  dispatch(toggleGptSearchView());) from the header in the handleGptSearchClick function 
+  and ab jaise hi m button (GPT search) button ko dabauga to i will get true in the redux store (showGptSearch(pin):true);
+  ab jaise hi showGptSearch true dikhaye to iss button ko dikhna h nhi to MainContainer and secondaryContainer ko dikhana h so iske liye m Browse m jaker useSelector ka use karke m redux store ka true false ko padd lunga 
+  ( const showGptSearch = useSelector(store => store.gpt.showGptSearch);)
+  and now we will make a functionality if we click omn the GPT search button if it is true then we will get the GPTSearch page and if it is false then i will get MainContainer and the SecondaryContainer 
+   (  showGptSearch ? ( <GPTSearch />) : (<><MainContainer /> <SecondaryContainer /></>))
+   and jaise hi yeh GPTSearch page khulega then we need two things one is the gpt search bar and the second is the GptmovieSuggestion and i use both of these in the GPTSearch 
+   and in the SearchBar.js me hum JSX banyege or GPTSearch page par aak background image lagayege 
+
+   # we want to make a feature that would provide the facility of providing the searching movies in the multiple language 
+   so humne sabse phle placeholder or search ko language ke according set karne k liye humne humne (languageConstants.js) name ki aak file banai search ki jagah humne ({lang.hindi.search}) ka use kiya h and placeholder ki jagah 
+   ({lang.hindi.gptSearchPlaceHolder}) ka use karte h , hindi will be dynamic it will be change 
+   we will use this information in the redux store 
+   now we will  make a dropdown button in the Header.js 
+   (export const SUPPORTED_LANGUAGE = 
+   [{identifier: "en",name : "English"},{identifier: "hindi",name : "Hindi"},{identifier: "spanish",name : "Spanish"}]) now we will use map in the header at the place of spearate language ,
+   i will create a seperate Slice for this to store it in the redux store so we will create configSlice.js 
+   now i will store it in the redux store and i successfully store it in the redux store(lang(pin):"en")
+   jha mene ye language ka button banaya h wha m onChange ka use karke  aak function {handleLanguageChange} ko call karuga aur m i want that what option changed it trigger event and iske baad hum isko event ki value ko console kara lenge or i will use the useRef to get the value of the selectbox 
+   now i will change the language it,it show in the console 
+   now we will dispatch this action in the changeLanguage in the configSlice so now our language will be store in redux store jaise hi hum ko change karenge to yeh isme store ho jayegi 
+
+   # now i want to change laguage of the placeholder and the search button whenever i change it from the button 
+   now we will use the stored value in the GptSearchBar.js the make a variable (langKey) there and we use it in the placeholder and the search button lang[langKey] to make it dynamic and this button do work successfully 
+
+   # we have  a problem when we move on the homepage from the gptsearch page then we will then the laguage dropdown show there so we will remove it.
+   sabse phle hum showGptSearch ka variable banaya and  useSelector ka use karke 
+    const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+    if it is true then we then only the dropdown button will show
+     {showGptSearch && (<select className="p-2 m-2 bg-gray-900 text-white" onChange={handleLanguageChange}>
+          {SUPPORTED_LANGUAGE.map(lang =>  <option key = {lang.identifier} value= {lang.identifier}>{lang.name}</option>)}
+         
+        </select>)}
+
+  ab mereko gptSearch wale page par gptSearch wale page ko homepage name dena h
+  yedi mera showGptSearch is true then i will use the homepage otherwise i will use the gptsearch 
